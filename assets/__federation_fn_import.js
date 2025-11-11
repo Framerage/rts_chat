@@ -1,1 +1,425 @@
-const q="[0-9A-Za-z-]+",y=`(?:\\+(${q}(?:\\.${q})*))`,_="0|[1-9]\\d*",v="[0-9]+",F="\\d*[a-zA-Z-][a-zA-Z0-9-]*",S=`(?:${v}|${F})`,D=`(?:-?(${S}(?:\\.${S})*))`,X=`(?:${_}|${F})`,K=`(?:-(${X}(?:\\.${X})*))`,T=`${_}|x|X|\\*`,d=`[v=\\s]*(${T})(?:\\.(${T})(?:\\.(${T})(?:${K})?${y}?)?)?`,J=`^\\s*(${d})\\s+-\\s+(${d})\\s*$`,Q=`(${v})\\.(${v})\\.(${v})`,W=`[v=\\s]*${Q}${D}?${y}?`,C="((?:<|>)?=?)",Y=`(\\s*)${C}\\s*(${W}|${d})`,U="(?:~>?)",A=`(\\s*)${U}\\s+`,B="(?:\\^)",j=`(\\s*)${B}\\s+`,m="(<|>)?=?\\s*\\*",ee=`^${B}${d}$`,re=`(${_})\\.(${_})\\.(${_})`,ne=`v?${re}${K}?${y}?`,te=`^${U}${d}$`,se=`^${C}\\s*${d}$`,ie=`^${C}\\s*(${ne})$|^$`,$e="^\\s*>=\\s*0.0.0\\s*$";function o(e){return new RegExp(e)}function c(e){return!e||e.toLowerCase()==="x"||e==="*"}function G(...e){return t=>e.reduce((s,r)=>r(s),t)}function E(e){return e.match(o(ie))}function z(e,t,s,r){const n=`${e}.${t}.${s}`;return r?`${n}-${r}`:n}function ue(e){return e.replace(o(J),(t,s,r,n,i,$,u,f,a,l,R,p)=>(c(r)?s="":c(n)?s=`>=${r}.0.0`:c(i)?s=`>=${r}.${n}.0`:s=`>=${s}`,c(a)?f="":c(l)?f=`<${+a+1}.0.0-0`:c(R)?f=`<${a}.${+l+1}.0-0`:p?f=`<=${a}.${l}.${R}-${p}`:f=`<=${f}`,`${s} ${f}`.trim()))}function ce(e){return e.replace(o(Y),"$1$2$3")}function fe(e){return e.replace(o(A),"$1~")}function ae(e){return e.replace(o(j),"$1^")}function le(e){return e.trim().split(/\s+/).map(t=>t.replace(o(ee),(s,r,n,i,$)=>c(r)?"":c(n)?`>=${r}.0.0 <${+r+1}.0.0-0`:c(i)?r==="0"?`>=${r}.${n}.0 <${r}.${+n+1}.0-0`:`>=${r}.${n}.0 <${+r+1}.0.0-0`:$?r==="0"?n==="0"?`>=${r}.${n}.${i}-${$} <${r}.${n}.${+i+1}-0`:`>=${r}.${n}.${i}-${$} <${r}.${+n+1}.0-0`:`>=${r}.${n}.${i}-${$} <${+r+1}.0.0-0`:r==="0"?n==="0"?`>=${r}.${n}.${i} <${r}.${n}.${+i+1}-0`:`>=${r}.${n}.${i} <${r}.${+n+1}.0-0`:`>=${r}.${n}.${i} <${+r+1}.0.0-0`)).join(" ")}function oe(e){return e.trim().split(/\s+/).map(t=>t.replace(o(te),(s,r,n,i,$)=>c(r)?"":c(n)?`>=${r}.0.0 <${+r+1}.0.0-0`:c(i)?`>=${r}.${n}.0 <${r}.${+n+1}.0-0`:$?`>=${r}.${n}.${i}-${$} <${r}.${+n+1}.0-0`:`>=${r}.${n}.${i} <${r}.${+n+1}.0-0`)).join(" ")}function pe(e){return e.split(/\s+/).map(t=>t.trim().replace(o(se),(s,r,n,i,$,u)=>{const f=c(n),a=f||c(i),l=a||c($);return r==="="&&l&&(r=""),u="",f?r===">"||r==="<"?"<0.0.0-0":"*":r&&l?(a&&(i=0),$=0,r===">"?(r=">=",a?(n=+n+1,i=0,$=0):(i=+i+1,$=0)):r==="<="&&(r="<",a?n=+n+1:i=+i+1),r==="<"&&(u="-0"),`${r+n}.${i}.${$}${u}`):a?`>=${n}.0.0${u} <${+n+1}.0.0-0`:l?`>=${n}.${i}.0${u} <${n}.${+i+1}.0-0`:s})).join(" ")}function de(e){return e.trim().replace(o(m),"")}function _e(e){return e.trim().replace(o($e),"")}function h(e,t){return e=+e||e,t=+t||t,e>t?1:e===t?0:-1}function Re(e,t){const{preRelease:s}=e,{preRelease:r}=t;if(s===void 0&&r)return 1;if(s&&r===void 0)return-1;if(s===void 0&&r===void 0)return 0;for(let n=0,i=s.length;n<=i;n++){const $=s[n],u=r[n];if($!==u)return $===void 0&&u===void 0?0:$?u?h($,u):-1:1}return 0}function V(e,t){return h(e.major,t.major)||h(e.minor,t.minor)||h(e.patch,t.patch)||Re(e,t)}function g(e,t){return e.version===t.version}function Ve(e,t){switch(e.operator){case"":case"=":return g(e,t);case">":return V(e,t)<0;case">=":return g(e,t)||V(e,t)<0;case"<":return V(e,t)>0;case"<=":return g(e,t)||V(e,t)>0;case void 0:return!0;default:return!1}}function ve(e){return G(le,oe,pe,de)(e)}function he(e){return G(ue,ce,fe,ae)(e.trim()).split(/\s+/).join(" ")}function we(e,t){if(!e)return!1;const n=he(t).split(" ").map(p=>ve(p)).join(" ").split(/\s+/).map(p=>_e(p)),i=E(e);if(!i)return!1;const[,$,,u,f,a,l]=i,R={version:z(u,f,a,l),major:u,minor:f,patch:a,preRelease:l?.split(".")};for(const p of n){const P=E(p);if(!P)return!1;const[,M,,L,I,O,b]=P,N={operator:M,version:z(L,I,O,b),major:L,minor:I,patch:O,preRelease:b?.split(".")};if(!Ve(N,R))return!1}return!0}const Z={},x={react:{get:()=>()=>k(new URL("__federation_shared_react.js",import.meta.url).href),import:!0},"react-dom":{get:()=>()=>k(new URL("__federation_shared_react-dom.js",import.meta.url).href),import:!0}},w=Object.create(null);async function ge(e,t="default"){return w[e]?new Promise(s=>s(w[e])):await be(e,t)||Te(e)}async function k(e){return Z[e]??=import(e),Z[e]}async function be(e,t){let s=null;if(globalThis?.__federation_shared__?.[t]?.[e]){const r=globalThis.__federation_shared__[t][e],n=x[e]?.requiredVersion;if(!!n){const $=Object.keys(r).find(u=>we(u,n));$?s=await(await r[$].get())():console.log(`provider support ${e}(${$}) is not satisfied requiredVersion(\${moduleMap[name].requiredVersion})`)}else{const $=Object.keys(r)[0];s=await(await r[$].get())()}}if(s)return H(s,e)}async function Te(e){if(x[e]?.import){let t=await(await x[e].get())();return H(t,e)}else console.error("consumer config import=false,so cant use callback shared module")}function H(e,t){return typeof e.default=="function"?(Object.keys(e).forEach(s=>{s!=="default"&&(e.default[s]=e[s])}),w[t]=e.default,e.default):(e.default&&(e=Object.assign({},e.default,e)),w[t]=e,e)}export{ge as importShared,Te as importSharedLocal,be as importSharedRuntime};
+const buildIdentifier = "[0-9A-Za-z-]+";
+const build = `(?:\\+(${buildIdentifier}(?:\\.${buildIdentifier})*))`;
+const numericIdentifier = "0|[1-9]\\d*";
+const numericIdentifierLoose = "[0-9]+";
+const nonNumericIdentifier = "\\d*[a-zA-Z-][a-zA-Z0-9-]*";
+const preReleaseIdentifierLoose = `(?:${numericIdentifierLoose}|${nonNumericIdentifier})`;
+const preReleaseLoose = `(?:-?(${preReleaseIdentifierLoose}(?:\\.${preReleaseIdentifierLoose})*))`;
+const preReleaseIdentifier = `(?:${numericIdentifier}|${nonNumericIdentifier})`;
+const preRelease = `(?:-(${preReleaseIdentifier}(?:\\.${preReleaseIdentifier})*))`;
+const xRangeIdentifier = `${numericIdentifier}|x|X|\\*`;
+const xRangePlain = `[v=\\s]*(${xRangeIdentifier})(?:\\.(${xRangeIdentifier})(?:\\.(${xRangeIdentifier})(?:${preRelease})?${build}?)?)?`;
+const hyphenRange = `^\\s*(${xRangePlain})\\s+-\\s+(${xRangePlain})\\s*$`;
+const mainVersionLoose = `(${numericIdentifierLoose})\\.(${numericIdentifierLoose})\\.(${numericIdentifierLoose})`;
+const loosePlain = `[v=\\s]*${mainVersionLoose}${preReleaseLoose}?${build}?`;
+const gtlt = "((?:<|>)?=?)";
+const comparatorTrim = `(\\s*)${gtlt}\\s*(${loosePlain}|${xRangePlain})`;
+const loneTilde = "(?:~>?)";
+const tildeTrim = `(\\s*)${loneTilde}\\s+`;
+const loneCaret = "(?:\\^)";
+const caretTrim = `(\\s*)${loneCaret}\\s+`;
+const star = "(<|>)?=?\\s*\\*";
+const caret = `^${loneCaret}${xRangePlain}$`;
+const mainVersion = `(${numericIdentifier})\\.(${numericIdentifier})\\.(${numericIdentifier})`;
+const fullPlain = `v?${mainVersion}${preRelease}?${build}?`;
+const tilde = `^${loneTilde}${xRangePlain}$`;
+const xRange = `^${gtlt}\\s*${xRangePlain}$`;
+const comparator = `^${gtlt}\\s*(${fullPlain})$|^$`;
+const gte0 = "^\\s*>=\\s*0.0.0\\s*$";
+function parseRegex(source) {
+  return new RegExp(source);
+}
+function isXVersion(version) {
+  return !version || version.toLowerCase() === "x" || version === "*";
+}
+function pipe(...fns) {
+  return (x) => {
+    return fns.reduce((v, f) => f(v), x);
+  };
+}
+function extractComparator(comparatorString) {
+  return comparatorString.match(parseRegex(comparator));
+}
+function combineVersion(major, minor, patch, preRelease2) {
+  const mainVersion2 = `${major}.${minor}.${patch}`;
+  if (preRelease2) {
+    return `${mainVersion2}-${preRelease2}`;
+  }
+  return mainVersion2;
+}
+function parseHyphen(range) {
+  return range.replace(
+    parseRegex(hyphenRange),
+    (_range, from, fromMajor, fromMinor, fromPatch, _fromPreRelease, _fromBuild, to, toMajor, toMinor, toPatch, toPreRelease) => {
+      if (isXVersion(fromMajor)) {
+        from = "";
+      } else if (isXVersion(fromMinor)) {
+        from = `>=${fromMajor}.0.0`;
+      } else if (isXVersion(fromPatch)) {
+        from = `>=${fromMajor}.${fromMinor}.0`;
+      } else {
+        from = `>=${from}`;
+      }
+      if (isXVersion(toMajor)) {
+        to = "";
+      } else if (isXVersion(toMinor)) {
+        to = `<${+toMajor + 1}.0.0-0`;
+      } else if (isXVersion(toPatch)) {
+        to = `<${toMajor}.${+toMinor + 1}.0-0`;
+      } else if (toPreRelease) {
+        to = `<=${toMajor}.${toMinor}.${toPatch}-${toPreRelease}`;
+      } else {
+        to = `<=${to}`;
+      }
+      return `${from} ${to}`.trim();
+    }
+  );
+}
+function parseComparatorTrim(range) {
+  return range.replace(parseRegex(comparatorTrim), "$1$2$3");
+}
+function parseTildeTrim(range) {
+  return range.replace(parseRegex(tildeTrim), "$1~");
+}
+function parseCaretTrim(range) {
+  return range.replace(parseRegex(caretTrim), "$1^");
+}
+function parseCarets(range) {
+  return range.trim().split(/\s+/).map((rangeVersion) => {
+    return rangeVersion.replace(
+      parseRegex(caret),
+      (_, major, minor, patch, preRelease2) => {
+        if (isXVersion(major)) {
+          return "";
+        } else if (isXVersion(minor)) {
+          return `>=${major}.0.0 <${+major + 1}.0.0-0`;
+        } else if (isXVersion(patch)) {
+          if (major === "0") {
+            return `>=${major}.${minor}.0 <${major}.${+minor + 1}.0-0`;
+          } else {
+            return `>=${major}.${minor}.0 <${+major + 1}.0.0-0`;
+          }
+        } else if (preRelease2) {
+          if (major === "0") {
+            if (minor === "0") {
+              return `>=${major}.${minor}.${patch}-${preRelease2} <${major}.${minor}.${+patch + 1}-0`;
+            } else {
+              return `>=${major}.${minor}.${patch}-${preRelease2} <${major}.${+minor + 1}.0-0`;
+            }
+          } else {
+            return `>=${major}.${minor}.${patch}-${preRelease2} <${+major + 1}.0.0-0`;
+          }
+        } else {
+          if (major === "0") {
+            if (minor === "0") {
+              return `>=${major}.${minor}.${patch} <${major}.${minor}.${+patch + 1}-0`;
+            } else {
+              return `>=${major}.${minor}.${patch} <${major}.${+minor + 1}.0-0`;
+            }
+          }
+          return `>=${major}.${minor}.${patch} <${+major + 1}.0.0-0`;
+        }
+      }
+    );
+  }).join(" ");
+}
+function parseTildes(range) {
+  return range.trim().split(/\s+/).map((rangeVersion) => {
+    return rangeVersion.replace(
+      parseRegex(tilde),
+      (_, major, minor, patch, preRelease2) => {
+        if (isXVersion(major)) {
+          return "";
+        } else if (isXVersion(minor)) {
+          return `>=${major}.0.0 <${+major + 1}.0.0-0`;
+        } else if (isXVersion(patch)) {
+          return `>=${major}.${minor}.0 <${major}.${+minor + 1}.0-0`;
+        } else if (preRelease2) {
+          return `>=${major}.${minor}.${patch}-${preRelease2} <${major}.${+minor + 1}.0-0`;
+        }
+        return `>=${major}.${minor}.${patch} <${major}.${+minor + 1}.0-0`;
+      }
+    );
+  }).join(" ");
+}
+function parseXRanges(range) {
+  return range.split(/\s+/).map((rangeVersion) => {
+    return rangeVersion.trim().replace(
+      parseRegex(xRange),
+      (ret, gtlt2, major, minor, patch, preRelease2) => {
+        const isXMajor = isXVersion(major);
+        const isXMinor = isXMajor || isXVersion(minor);
+        const isXPatch = isXMinor || isXVersion(patch);
+        if (gtlt2 === "=" && isXPatch) {
+          gtlt2 = "";
+        }
+        preRelease2 = "";
+        if (isXMajor) {
+          if (gtlt2 === ">" || gtlt2 === "<") {
+            return "<0.0.0-0";
+          } else {
+            return "*";
+          }
+        } else if (gtlt2 && isXPatch) {
+          if (isXMinor) {
+            minor = 0;
+          }
+          patch = 0;
+          if (gtlt2 === ">") {
+            gtlt2 = ">=";
+            if (isXMinor) {
+              major = +major + 1;
+              minor = 0;
+              patch = 0;
+            } else {
+              minor = +minor + 1;
+              patch = 0;
+            }
+          } else if (gtlt2 === "<=") {
+            gtlt2 = "<";
+            if (isXMinor) {
+              major = +major + 1;
+            } else {
+              minor = +minor + 1;
+            }
+          }
+          if (gtlt2 === "<") {
+            preRelease2 = "-0";
+          }
+          return `${gtlt2 + major}.${minor}.${patch}${preRelease2}`;
+        } else if (isXMinor) {
+          return `>=${major}.0.0${preRelease2} <${+major + 1}.0.0-0`;
+        } else if (isXPatch) {
+          return `>=${major}.${minor}.0${preRelease2} <${major}.${+minor + 1}.0-0`;
+        }
+        return ret;
+      }
+    );
+  }).join(" ");
+}
+function parseStar(range) {
+  return range.trim().replace(parseRegex(star), "");
+}
+function parseGTE0(comparatorString) {
+  return comparatorString.trim().replace(parseRegex(gte0), "");
+}
+function compareAtom(rangeAtom, versionAtom) {
+  rangeAtom = +rangeAtom || rangeAtom;
+  versionAtom = +versionAtom || versionAtom;
+  if (rangeAtom > versionAtom) {
+    return 1;
+  }
+  if (rangeAtom === versionAtom) {
+    return 0;
+  }
+  return -1;
+}
+function comparePreRelease(rangeAtom, versionAtom) {
+  const { preRelease: rangePreRelease } = rangeAtom;
+  const { preRelease: versionPreRelease } = versionAtom;
+  if (rangePreRelease === void 0 && !!versionPreRelease) {
+    return 1;
+  }
+  if (!!rangePreRelease && versionPreRelease === void 0) {
+    return -1;
+  }
+  if (rangePreRelease === void 0 && versionPreRelease === void 0) {
+    return 0;
+  }
+  for (let i = 0, n = rangePreRelease.length; i <= n; i++) {
+    const rangeElement = rangePreRelease[i];
+    const versionElement = versionPreRelease[i];
+    if (rangeElement === versionElement) {
+      continue;
+    }
+    if (rangeElement === void 0 && versionElement === void 0) {
+      return 0;
+    }
+    if (!rangeElement) {
+      return 1;
+    }
+    if (!versionElement) {
+      return -1;
+    }
+    return compareAtom(rangeElement, versionElement);
+  }
+  return 0;
+}
+function compareVersion(rangeAtom, versionAtom) {
+  return compareAtom(rangeAtom.major, versionAtom.major) || compareAtom(rangeAtom.minor, versionAtom.minor) || compareAtom(rangeAtom.patch, versionAtom.patch) || comparePreRelease(rangeAtom, versionAtom);
+}
+function eq(rangeAtom, versionAtom) {
+  return rangeAtom.version === versionAtom.version;
+}
+function compare(rangeAtom, versionAtom) {
+  switch (rangeAtom.operator) {
+    case "":
+    case "=":
+      return eq(rangeAtom, versionAtom);
+    case ">":
+      return compareVersion(rangeAtom, versionAtom) < 0;
+    case ">=":
+      return eq(rangeAtom, versionAtom) || compareVersion(rangeAtom, versionAtom) < 0;
+    case "<":
+      return compareVersion(rangeAtom, versionAtom) > 0;
+    case "<=":
+      return eq(rangeAtom, versionAtom) || compareVersion(rangeAtom, versionAtom) > 0;
+    case void 0: {
+      return true;
+    }
+    default:
+      return false;
+  }
+}
+function parseComparatorString(range) {
+  return pipe(
+    parseCarets,
+    parseTildes,
+    parseXRanges,
+    parseStar
+  )(range);
+}
+function parseRange(range) {
+  return pipe(
+    parseHyphen,
+    parseComparatorTrim,
+    parseTildeTrim,
+    parseCaretTrim
+  )(range.trim()).split(/\s+/).join(" ");
+}
+function satisfy(version, range) {
+  if (!version) {
+    return false;
+  }
+  const parsedRange = parseRange(range);
+  const parsedComparator = parsedRange.split(" ").map((rangeVersion) => parseComparatorString(rangeVersion)).join(" ");
+  const comparators = parsedComparator.split(/\s+/).map((comparator2) => parseGTE0(comparator2));
+  const extractedVersion = extractComparator(version);
+  if (!extractedVersion) {
+    return false;
+  }
+  const [
+    ,
+    versionOperator,
+    ,
+    versionMajor,
+    versionMinor,
+    versionPatch,
+    versionPreRelease
+  ] = extractedVersion;
+  const versionAtom = {
+    version: combineVersion(
+      versionMajor,
+      versionMinor,
+      versionPatch,
+      versionPreRelease
+    ),
+    major: versionMajor,
+    minor: versionMinor,
+    patch: versionPatch,
+    preRelease: versionPreRelease == null ? void 0 : versionPreRelease.split(".")
+  };
+  for (const comparator2 of comparators) {
+    const extractedComparator = extractComparator(comparator2);
+    if (!extractedComparator) {
+      return false;
+    }
+    const [
+      ,
+      rangeOperator,
+      ,
+      rangeMajor,
+      rangeMinor,
+      rangePatch,
+      rangePreRelease
+    ] = extractedComparator;
+    const rangeAtom = {
+      operator: rangeOperator,
+      version: combineVersion(
+        rangeMajor,
+        rangeMinor,
+        rangePatch,
+        rangePreRelease
+      ),
+      major: rangeMajor,
+      minor: rangeMinor,
+      patch: rangePatch,
+      preRelease: rangePreRelease == null ? void 0 : rangePreRelease.split(".")
+    };
+    if (!compare(rangeAtom, versionAtom)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+const currentImports = {};
+
+// eslint-disable-next-line no-undef
+const moduleMap = {'react':{get:()=>()=>__federation_import(new URL('__federation_shared_react.js', import.meta.url).href),import:true},'react-dom':{get:()=>()=>__federation_import(new URL('__federation_shared_react-dom.js', import.meta.url).href),import:true}};
+const moduleCache = Object.create(null);
+async function importShared(name, shareScope = 'default') {
+  return moduleCache[name]
+    ? new Promise((r) => r(moduleCache[name]))
+    : (await getSharedFromRuntime(name, shareScope)) || getSharedFromLocal(name)
+}
+// eslint-disable-next-line
+async function __federation_import(name) {
+  currentImports[name] ??= import(name);
+  return currentImports[name]
+}
+async function getSharedFromRuntime(name, shareScope) {
+  let module = null;
+  if (globalThis?.__federation_shared__?.[shareScope]?.[name]) {
+    const versionObj = globalThis.__federation_shared__[shareScope][name];
+    const requiredVersion = moduleMap[name]?.requiredVersion;
+    const hasRequiredVersion = !!requiredVersion;
+    if (hasRequiredVersion) {
+      const versionKey = Object.keys(versionObj).find((version) =>
+        satisfy(version, requiredVersion)
+      );
+      if (versionKey) {
+        const versionValue = versionObj[versionKey];
+        module = await (await versionValue.get())();
+      } else {
+        console.log(
+          `provider support ${name}(${versionKey}) is not satisfied requiredVersion(\${moduleMap[name].requiredVersion})`
+        );
+      }
+    } else {
+      const versionKey = Object.keys(versionObj)[0];
+      const versionValue = versionObj[versionKey];
+      module = await (await versionValue.get())();
+    }
+  }
+  if (module) {
+    return flattenModule(module, name)
+  }
+}
+async function getSharedFromLocal(name) {
+  if (moduleMap[name]?.import) {
+    let module = await (await moduleMap[name].get())();
+    return flattenModule(module, name)
+  } else {
+    console.error(
+      `consumer config import=false,so cant use callback shared module`
+    );
+  }
+}
+function flattenModule(module, name) {
+  // use a shared module which export default a function will getting error 'TypeError: xxx is not a function'
+  if (typeof module.default === 'function') {
+    Object.keys(module).forEach((key) => {
+      if (key !== 'default') {
+        module.default[key] = module[key];
+      }
+    });
+    moduleCache[name] = module.default;
+    return module.default
+  }
+  if (module.default) module = Object.assign({}, module.default, module);
+  moduleCache[name] = module;
+  return module
+}
+
+export { importShared, getSharedFromLocal as importSharedLocal, getSharedFromRuntime as importSharedRuntime };
