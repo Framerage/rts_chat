@@ -15,10 +15,10 @@ export default defineConfig({
       shared: ["react", "react-dom"],
     }),
   ],
-  server: {
-    open: "/rts_chat",
-  },
-  base: "/rts_chat",
+  // server: {
+  //   open: "/rts_chat/",
+  // },
+  base: "/rts_chat/",
   build: {
     rollupOptions: {
       output: {
@@ -29,7 +29,7 @@ export default defineConfig({
     },
     modulePreload: false,
     target: "esnext",
-    minify: true,
+    minify: false,
     cssCodeSplit: false,
   },
 });
