@@ -5,9 +5,9 @@ import react from "@vitejs/plugin-react-swc";
 export default defineConfig({
   plugins: [react()],
   server: {
-    open: "/rts_wss_chat",
+    open: "/rts_chat",
   },
-  base: "/rts_wss_chat",
+  base: "/rts_chat",
   build: {
     rollupOptions: {
       output: {
