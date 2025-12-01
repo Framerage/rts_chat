@@ -5,6 +5,9 @@
   align-content: center;
   color: #000;
   font-size: 14px;
+  min-height: 100%;
+  max-height: 100dvh;
+  height: 100%;
   .chatContainer {
     border: 6px double white;
     max-width: 250px;
@@ -14,6 +17,7 @@
     justify-content: space-between;
     margin: auto;
     padding: 4px;
+    flex-grow: 0;
     .chatHeader {
       background-color: white;
       height: 50px;
@@ -37,6 +41,12 @@
       .personMsg {
         text-shadow: 0 0 5px greenyellow;
         justify-items: flex-end;
+      }
+      p[role="name"] {
+        background-color: rgb(5, 0, 19);
+        color: #fff;
+        padding: 2px 4px;
+        border-radius: 4px;
       }
     }
     .chatFooter {

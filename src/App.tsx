@@ -1,15 +1,34 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { lazy, useCallback, useEffect, useRef, useState } from "react";
 import styles from "./styles.module.scss";
 
+// import useAuthStore from "prehost_app/store/authStore";
+// const test = lazy(() => import("prehost_app/store/useAuthStore") as any);
+const fetchAuthStore = async (): Promise<{
+  useAuthStateSelector: () => string | null;
+} | null> => {
+  try {
+    const useAuthStore = (
+      await import("prehost_app/store/useAuthStateSelector")
+    ).default;
+    console.log(useAuthStore, "result import");
+    return { ...useAuthStore } as any;
+  } catch {
+    console.log("error with fetch");
+    return null;
+  }
+};
+const authStore = await fetchAuthStore();
 const WssChat = () => {
   const [msgs, setMsgs] = useState<
-    { value: string; timeStamp: any; client: string }[]
+    { value: string; timeStamp: any; clientId: string }[]
   >([]);
   const [inputValue, setInputValue] = useState<string>();
   const [socketState, setSocketState] = useState<WebSocket>();
 
   const userId = useRef<number | null>(null);
-
+  // console.log(test, " test load");
+  const userName = authStore?.useAuthStateSelector;
+  console.log(userName, " test load store");
   const chatRef = useRef<HTMLUListElement | null>(null);
   useEffect(() => {
     const socket = new WebSocket("ws://localhost:8080");
@@ -25,12 +44,12 @@ const WssChat = () => {
       console.log(e, " msg event");
       const msgData = String(e.data);
       const msg = msgData.split("//c:")[0];
-      const client = msgData.split("//c:")[1];
+      const clientId = msgData.split("//c:")[1];
       setMsgs((prev) => [
         ...prev,
         {
           value: msg,
-          client,
+          clientId,
           timeStamp: new Date().toLocaleTimeString(),
         },
       ]);
@@ -73,12 +92,14 @@ const WssChat = () => {
               <li
                 key={msg.timeStamp}
                 className={`${styles.chatMsg} ${
-                  msg.client === String(userId.current) && styles.personMsg
+                  msg.clientId === String(userId.current) && styles.personMsg
                 }`}
               >
+                <p role="name">{`${userName || "unknown"}[${
+                  msg.clientId ?? null
+                }]`}</p>
                 <p>{msg.value}</p>
                 <p>{msg.timeStamp.slice(0, -3)}</p>
-                <p>{msg.client}</p>
               </li>
             );
           })}

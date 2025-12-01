@@ -12,6 +12,11 @@ export default defineConfig({
       exposes: {
         "./Chat": "./src/App",
       },
+      remotes: {
+        prehost_app:
+          // "http://localhost:4173/rts_vite_mf_prehost/prehost_appEntry.js",
+          "https://framerage.github.io/rts_vite_mf_prehost/assets/prehost_appEntry.js",
+      },
       shared: ["react", "react-dom"],
     }),
   ],
