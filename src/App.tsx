@@ -27,21 +27,39 @@ const WssChat = () => {
 
   const userId = useRef<number | null>(null);
   // console.log(test, " test load");
-  const userName = authStore?.useAuthStateSelector;
-  console.log(userName, " test load store");
+  const userName = authStore?.useAuthStateSelector();
+  // console.log(userName, " test load store");
   const chatRef = useRef<HTMLUListElement | null>(null);
   useEffect(() => {
     const socket = new WebSocket("ws://localhost:8080");
     setSocketState(socket);
 
-    socket.onopen = (e) => {
-      console.log("connection ", e);
-      const clientId = new Date().getMilliseconds();
-      userId.current = clientId;
-    };
+    // socket.onopen = (e) => {
+    //   console.log("connection ", e);
+    //   const clientId = new Date().getMilliseconds();
+    //   userId.current = clientId;
+    // };
 
     socket.onmessage = (e) => {
       console.log(e, " msg event");
+      if (e.data.includes("wsServer")) {
+        const parseMsg: {
+          wsServer: string;
+          text: string;
+          clientId: number;
+        } = JSON.parse(e.data);
+        userId.current = parseMsg.clientId;
+        const msg = parseMsg.text.split("//c:")[0];
+        setMsgs((prev) => [
+          ...prev,
+          {
+            value: msg,
+            clientId: "WS",
+            timeStamp: new Date().toLocaleTimeString(),
+          },
+        ]);
+        return;
+      }
       const msgData = String(e.data);
       const msg = msgData.split("//c:")[0];
       const clientId = msgData.split("//c:")[1];
@@ -95,11 +113,11 @@ const WssChat = () => {
                   msg.clientId === String(userId.current) && styles.personMsg
                 }`}
               >
-                <p role="name">{`${userName || "unknown"}[${
-                  msg.clientId ?? null
-                }]`}</p>
+                <p role="name">
+                  {`${userName || "unknown"}[${msg.clientId ?? null}]`}/
+                  {msg.timeStamp.slice(0, -3)}
+                </p>
                 <p>{msg.value}</p>
-                <p>{msg.timeStamp.slice(0, -3)}</p>
               </li>
             );
           })}

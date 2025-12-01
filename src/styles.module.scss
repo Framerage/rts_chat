@@ -1,6 +1,4 @@
 .contentWrap {
-  background-color: lightblue;
-  padding: 0 20px;
   margin: 0 auto;
   align-content: center;
   color: #000;
@@ -17,7 +15,8 @@
     justify-content: space-between;
     margin: auto;
     padding: 4px;
-    flex-grow: 0;
+    height: 100%;
+
     .chatHeader {
       background-color: white;
       height: 50px;
@@ -25,7 +24,7 @@
       text-align: center;
     }
     .chatWindow {
-      background-color: lightgray;
+      background-color: rgb(5, 0, 19);
       min-height: 150px;
       max-height: 350px;
       overflow: auto;
@@ -35,18 +34,18 @@
       flex-direction: column;
       gap: 8px;
       list-style: none;
+      color: #fff;
+
       .chatMsg {
         justify-items: flex-start;
       }
       .personMsg {
-        text-shadow: 0 0 5px greenyellow;
         justify-items: flex-end;
       }
       p[role="name"] {
-        background-color: rgb(5, 0, 19);
-        color: #fff;
         padding: 2px 4px;
         border-radius: 4px;
+        color: greenyellow;
       }
     }
     .chatFooter {
