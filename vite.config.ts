@@ -14,8 +14,9 @@ export default defineConfig({
       },
       remotes: {
         prehost_app:
-          // "http://localhost:4173/rts_vite_mf_prehost/prehost_appEntry.js",
-          "https://framerage.github.io/rts_vite_mf_prehost/assets/prehost_appEntry.js",
+          "http://localhost:5001/rts_vite_mf_prehost/assets/prehost_appEntry.js", // preview
+        // "/api/rts_vite_mf_prehost/assets/prehost_appEntry.js", //proxy
+        // "https://framerage.github.io/rts_vite_mf_prehost/assets/prehost_appEntry.js",
       },
       shared: ["react", "react-dom"],
     }),
@@ -23,7 +24,6 @@ export default defineConfig({
   // server: {
   //   open: "/rts_chat/",
   // },
-  base: "/rts_chat/",
   build: {
     rollupOptions: {
       output: {
@@ -36,5 +36,24 @@ export default defineConfig({
     target: "esnext",
     minify: false,
     cssCodeSplit: false,
+  },
+  base: "/rts_chat",
+  preview: {
+    port: 5005,
+    cors: false,
+    open: "/rts_chat",
+  },
+  server: {
+    open: "/rts_chat",
+    port: 5171,
+    cors: true,
+    origin: "http://localhost:5001/rts_vite_mf_prehost",
+    // proxy: {
+    //   "/api": {
+    //     // target: "[http://localhost:5001http://localhost:5005]",
+    //     changeOrigin: true,
+    //     rewrite: (path) => path.replace(/^\/api/, ""),
+    //   },
+    // },
   },
 });
