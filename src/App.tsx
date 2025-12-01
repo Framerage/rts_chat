@@ -11,7 +11,7 @@ const fetchAuthStore = async (): Promise<{
       await import("prehost_app/store/useAuthStateSelector")
     ).default;
     console.log(useAuthStore, "result import");
-    return { ...useAuthStore } as any;
+    return useAuthStore;
   } catch {
     console.log("error with fetch");
     return null;

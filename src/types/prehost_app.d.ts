@@ -1,5 +1,5 @@
 declare module "prehost_app/store/useAuthStateSelector" {
-  const authStore: null | string;
+  const useAuthStore: { useAuthStateSelector: () => string | null };
 
   export default useAuthStore;
 }
