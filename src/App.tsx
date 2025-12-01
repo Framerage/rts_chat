@@ -20,16 +20,22 @@ const fetchAuthStore = async (): Promise<{
 const authStore = await fetchAuthStore();
 const WssChat = () => {
   const [msgs, setMsgs] = useState<
-    { value: string; timeStamp: any; clientId: string }[]
+    { value: string; timeStamp: any; clientId: string; clientName: string }[]
   >([]);
   const [inputValue, setInputValue] = useState<string>();
   const [socketState, setSocketState] = useState<WebSocket>();
 
   const userId = useRef<number | null>(null);
+  const userName = useRef<string | null>(null);
   // console.log(test, " test load");
-  const userName = authStore?.useAuthStateSelector();
-  // console.log(userName, " test load store");
+  const userNameStore = authStore?.useAuthStateSelector();
+  console.log(userNameStore, " test load store");
   const chatRef = useRef<HTMLUListElement | null>(null);
+  useEffect(() => {
+    if (userNameStore && userName.current) {
+      userName.current = userNameStore;
+    }
+  }, [userNameStore, userName.current]);
   useEffect(() => {
     const socket = new WebSocket("ws://localhost:8080");
     setSocketState(socket);
@@ -49,12 +55,15 @@ const WssChat = () => {
           clientId: number;
         } = JSON.parse(e.data);
         userId.current = parseMsg.clientId;
+        userName.current = userNameStore ?? "unknown";
+        console.log(userNameStore, "userNameStore");
         const msg = parseMsg.text.split("//c:")[0];
         setMsgs((prev) => [
           ...prev,
           {
             value: msg,
             clientId: "WS",
+            clientName: "Server",
             timeStamp: new Date().toLocaleTimeString(),
           },
         ]);
@@ -63,11 +72,13 @@ const WssChat = () => {
       const msgData = String(e.data);
       const msg = msgData.split("//c:")[0];
       const clientId = msgData.split("//c:")[1];
+      const clientName = msgData.split("//c:")[2];
       setMsgs((prev) => [
         ...prev,
         {
           value: msg,
           clientId,
+          clientName,
           timeStamp: new Date().toLocaleTimeString(),
         },
       ]);
@@ -89,7 +100,9 @@ const WssChat = () => {
     if (!inputValue) return;
     if (socketState && socketState.readyState === WebSocket.OPEN) {
       socketState.send(
-        `${inputValue.replaceAll(/^\n+|\n|\r+$/g, "")}//c:${userId.current}`
+        `${inputValue.replaceAll(/^\n+|\n|\r+$/g, "")}//c:${
+          userId.current
+        }//c:${userName.current}`
       );
       setInputValue("");
     }
@@ -114,7 +127,7 @@ const WssChat = () => {
                 }`}
               >
                 <p role="name">
-                  {`${userName || "unknown"}[${msg.clientId ?? null}]`}/
+                  {`${msg.clientName}[${msg.clientId ?? null}]`}/
                   {msg.timeStamp.slice(0, -3)}
                 </p>
                 <p>{msg.value}</p>
