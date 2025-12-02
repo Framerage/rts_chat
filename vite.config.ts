@@ -14,9 +14,9 @@ export default defineConfig({
       },
       remotes: {
         prehost_app:
-          "http://localhost:5001/rts_vite_mf_prehost/assets/prehost_appEntry.js", // preview
-        // "/api/rts_vite_mf_prehost/assets/prehost_appEntry.js", //proxy
-        // "https://framerage.github.io/rts_vite_mf_prehost/assets/prehost_appEntry.js",
+          // "http://localhost:5001/rts_vite_mf_prehost/assets/prehost_appEntry.js", // preview
+          // "/api/rts_vite_mf_prehost/assets/prehost_appEntry.js", //proxy
+          "https://framerage.github.io/rts_vite_mf_prehost/assets/prehost_appEntry.js",
       },
       shared: ["react", "react-dom"],
     }),
@@ -55,5 +55,14 @@ export default defineConfig({
     //     rewrite: (path) => path.replace(/^\/api/, ""),
     //   },
     // },
+    proxy: {
+      //or /rts_vite_mf_prehost {rewrite:...'/rts_vite_mf_prehost}
+      "/prehost_app": {
+        // Adjust this path to match your remote's base path
+        target: "http://localhost:5001", // Replace with your remote micro frontend's dev server URL
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/prehost_app/, ""),
+      },
+    },
   },
 });
