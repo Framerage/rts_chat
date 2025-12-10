@@ -32,7 +32,7 @@ const WssChat = () => {
   console.log(userNameStore, " test load store");
   const chatRef = useRef<HTMLUListElement | null>(null);
   useEffect(() => {
-    if (userNameStore && userName.current) {
+    if (userNameStore && !userName.current) {
       userName.current = userNameStore;
     }
   }, [userNameStore, userName.current]);
